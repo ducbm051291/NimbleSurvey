@@ -1,0 +1,29 @@
+# Uncomment the next line to define a global platform for your project
+platform :ios, '12.0'
+
+target 'NimbleSurvey' do
+  # Comment the next line if you don't want to use dynamic frameworks
+  use_frameworks!
+  
+  # Pods for NimbleSurveycd
+  #MARK: - Network
+  pod 'Moya/RxSwift', '~> 14.0'
+  
+  #MARK: - Util
+  pod 'SDWebImage'
+  pod 'SVProgressHUD'
+  pod 'SwiftMessages'
+  pod 'KeychainAccess'
+  pod 'IQKeyboardManagerSwift'
+  
+  #MARK: - Rx
+  pod 'RxSwift'
+  pod 'RxCocoa'
+  pod 'RxRelay'
+  pod 'RxDataSources'
+  
+  target 'NimbleSurveyTests' do
+    pod 'RxTest'
+    pod 'RxBlocking'
+  end
+end
