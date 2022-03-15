@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19519"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="HomeViewController" customModule="NimbleSurvey" customModuleProvider="target">
+            <connections>
+                <outlet property="collectionView" destination="vhu-kI-0q8" id="pNU-QC-hko"/>
+                <outlet property="detailButton" destination="qzx-Wq-jPY" id="xj2-Bm-2Ev"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" directionalLockEnabled="YES" pagingEnabled="YES" showsVerticalScrollIndicator="NO" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="vhu-kI-0q8">
+                    <rect key="frame" x="0.0" y="-8" width="414" height="904"/>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="0.0" minimumInteritemSpacing="0.0" id="S9L-95-Lhx">
+                        <size key="itemSize" width="128" height="128"/>
+                        <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                        <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                        <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                    </collectionViewFlowLayout>
+                </collectionView>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qzx-Wq-jPY">
+                    <rect key="frame" x="338" y="752" width="56" height="56"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="56" id="era-sR-RQu"/>
+                        <constraint firstAttribute="height" constant="56" id="sU9-uI-ccg"/>
+                    </constraints>
+                    <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                    <state key="normal" image="ic_action"/>
+                </button>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bd5-Dl-Tb1">
+                    <rect key="frame" x="338" y="94" width="56" height="56"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="56" id="8b7-XT-hmM"/>
+                        <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="36" id="CTu-Xz-4Wl"/>
+                        <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="36" id="Yxa-T9-vtp"/>
+                        <constraint firstAttribute="width" constant="56" id="u8X-wD-vff"/>
+                    </constraints>
+                    <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                    <state key="normal" image="ic_avatar"/>
+                </button>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
+            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+            <constraints>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="qzx-Wq-jPY" secondAttribute="trailing" constant="20" id="IIM-fR-Bvx"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="qzx-Wq-jPY" secondAttribute="bottom" constant="54" id="KVl-ui-cgj"/>
+                <constraint firstItem="vhu-kI-0q8" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="M49-tG-UvA"/>
+                <constraint firstItem="vhu-kI-0q8" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="-8" id="QR7-bV-NZj"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="bd5-Dl-Tb1" secondAttribute="trailing" constant="20" id="Xz8-5H-4R9"/>
+                <constraint firstAttribute="trailing" secondItem="vhu-kI-0q8" secondAttribute="trailing" id="aNi-2k-JbY"/>
+                <constraint firstAttribute="bottom" secondItem="vhu-kI-0q8" secondAttribute="bottom" id="iUj-wx-7kL"/>
+                <constraint firstItem="bd5-Dl-Tb1" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" constant="50" id="jCf-IY-nky"/>
+            </constraints>
+            <point key="canvasLocation" x="131.8840579710145" y="93.75"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="ic_action" width="56" height="56"/>
+        <image name="ic_avatar" width="36" height="36"/>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>
