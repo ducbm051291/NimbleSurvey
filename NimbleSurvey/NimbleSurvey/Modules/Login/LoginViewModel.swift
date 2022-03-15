@@ -21,7 +21,7 @@ class LoginViewModel : ViewModelProtocol {
     }
     
     struct Output {
-        let loginResult             : Observable<Result<NimbleSurveyUser,NimbleSurveyError>>
+        let loginResult             : Observable<Result<NimbleSurveyAuth,NimbleSurveyError>>
     }
     
     var input      : Input?
@@ -50,7 +50,7 @@ class LoginViewModel : ViewModelProtocol {
                 ip.isLoading.accept(true)
             })
             .withLatestFrom(Observable.combineLatest(ip.email, ip.password))
-            .flatMap { (email,password) -> Observable<Result<NimbleSurveyUser,NimbleSurveyError>> in
+            .flatMap { (email,password) -> Observable<Result<NimbleSurveyAuth,NimbleSurveyError>> in
                 return dp.login(email: email, password: password)
             }
             .do(onNext: { _ in

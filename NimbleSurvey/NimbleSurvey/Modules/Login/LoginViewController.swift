@@ -96,8 +96,8 @@ extension LoginViewController {
     func bindingOutput(output: LoginViewModel.Output) {
         output.loginResult.subscribe(onNext: { result in
             switch result {
-            case .success(let user):
-                UserManager.shared.setUser(user: user)
+            case .success(let auth):
+                AuthenticationManager.shared.setAuth(auth)
                 DispatchQueue.main.async {
                     MessageManager.shared.showMessage(messageType: .success, message: "LOGIN SUCCESSFULLY!")
                     AppDelegate.openHomeScreen()

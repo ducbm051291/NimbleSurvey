@@ -17,20 +17,23 @@ class NimbleSurveyAPIService {
     // MARK: Singleton
     static let shared = NimbleSurveyAPIService()
     let provider = MoyaProvider<NimbleSurveyAPI>()
-    private var refreshTokenObservable: Observable<Bool>
+    private var refreshTokenObservable: Observable<Bool> = Observable.empty()
     private init() {
         // Refresh token observable
         self.refreshTokenObservable = Observable.deferred {
-            if let token = UserManager.shared.currentUser()?.attributes?.refreshToken, not(token.isEmpty) {
-                //return NimbleSurveyAPIService.shared.refreshToken(refreshToken: token).map { result -> Bool in
-                //    if result.result() != nil {
-                //        return true
-                //    }
-                //    return false
-                //}
-                return Observable.just(true)
-            } else {
+            let token = AuthenticationManager.shared.currentAuth()?.attributes?.refreshToken ?? ""
+            if token.isEmpty {
                 return Observable.just(false)
+            } else {
+                return self.refreshToken(refreshToken: token).flatMap { result -> Observable<Bool> in
+                    switch result {
+                    case .success(let auth):
+                        AuthenticationManager.shared.setAuth(auth)
+                        return Observable.just(true)
+                    case .failure:
+                        return Observable.just(false)
+                    }
+                }
             }
         }
         .share(replay: 1, scope: .whileConnected)
@@ -38,6 +41,20 @@ class NimbleSurveyAPIService {
     // This is a generic wrapper function for API request. All API request must be called through this.
     func request<T: Codable>(_ api: NimbleSurveyAPI) -> Observable<Result<T,NimbleSurveyError>> {
         return provider.rx.request(api).asObservable()
+            .flatMap({ response -> Observable<Response> in
+                if response.statusCode == 401 {
+                    return self.refreshTokenObservable.flatMap { success -> Observable<Response> in
+                        if success {
+                            // Re-call API
+                            return self.provider.rx.request(api).asObservable()
+                        } else {
+                            return Observable.just(response)
+                        }
+                    }
+                } else {
+                    return Observable.just(response)
+                }
+            })
             .flatMap({ response -> Observable<Result<T,NimbleSurveyError>> in
                 Self.prettyPrintJsonData(response.data)
                 let decoder = JSONDecoder()
@@ -57,13 +74,13 @@ class NimbleSurveyAPIService {
 }
 
 extension NimbleSurveyAPIService {
-    func login(email: String, password: String) -> Observable<Result<NimbleSurveyUser,NimbleSurveyError>> {
+    func login(email: String, password: String) -> Observable<Result<NimbleSurveyAuth,NimbleSurveyError>> {
         return self.request(.signIn(SignInRequest(
             email: email,
             password: password
         )))
     }
-    func refreshToken(refreshToken: String) -> Observable<Result<[NimbleSurveyUser],NimbleSurveyError>> {
+    func refreshToken(refreshToken: String) -> Observable<Result<NimbleSurveyAuth,NimbleSurveyError>> {
         return self.request(.refreshToken(RefreshTokenRequest(refreshToken: refreshToken)))
     }
     func getSurveyList(page: Int, limit: Int = 4) -> Observable<Result<[NimbleSurvey],NimbleSurveyError>> {

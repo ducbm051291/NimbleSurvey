@@ -18,7 +18,7 @@
 		584FAB6C27E0402100CD6BAA /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 584FAB6B27E0402100CD6BAA /* HomeViewModel.swift */; };
 		584FAB7027E0403200CD6BAA /* SurveyDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 584FAB6E27E0403200CD6BAA /* SurveyDetailViewController.swift */; };
 		584FAB7127E0403200CD6BAA /* SurveyDetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 584FAB6F27E0403200CD6BAA /* SurveyDetailViewController.xib */; };
-		584FAB7327E04C9700CD6BAA /* UserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 584FAB7227E04C9700CD6BAA /* UserManager.swift */; };
+		584FAB7327E04C9700CD6BAA /* AuthenticationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 584FAB7227E04C9700CD6BAA /* AuthenticationManager.swift */; };
 		584FAB7527E07F0F00CD6BAA /* UIView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 584FAB7427E07F0F00CD6BAA /* UIView+Extension.swift */; };
 		584FAB7927E0A0D400CD6BAA /* SurveyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 584FAB7727E0A0D400CD6BAA /* SurveyCell.swift */; };
 		584FAB7A27E0A0D400CD6BAA /* SurveyCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 584FAB7827E0A0D400CD6BAA /* SurveyCell.xib */; };
@@ -32,7 +32,7 @@
 		58D4F98527DAA64A00184CBB /* NimbleSurveyAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58D4F98427DAA64A00184CBB /* NimbleSurveyAPI.swift */; };
 		58D4F98727DAA69800184CBB /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58D4F98627DAA69800184CBB /* Constants.swift */; };
 		58D4F98927DAA80400184CBB /* Encodable+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58D4F98827DAA80400184CBB /* Encodable+Extension.swift */; };
-		58D4F98C27DAA8A500184CBB /* NimbleSurveyUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58D4F98B27DAA8A500184CBB /* NimbleSurveyUser.swift */; };
+		58D4F98C27DAA8A500184CBB /* NimbleSurveyAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58D4F98B27DAA8A500184CBB /* NimbleSurveyAuth.swift */; };
 		58D4F98E27DAAA0700184CBB /* NimbleSurveyAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58D4F98D27DAAA0700184CBB /* NimbleSurveyAPIService.swift */; };
 /* End PBXBuildFile section */
 
@@ -57,7 +57,7 @@
 		584FAB6B27E0402100CD6BAA /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		584FAB6E27E0403200CD6BAA /* SurveyDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyDetailViewController.swift; sourceTree = "<group>"; };
 		584FAB6F27E0403200CD6BAA /* SurveyDetailViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SurveyDetailViewController.xib; sourceTree = "<group>"; };
-		584FAB7227E04C9700CD6BAA /* UserManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserManager.swift; sourceTree = "<group>"; };
+		584FAB7227E04C9700CD6BAA /* AuthenticationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationManager.swift; sourceTree = "<group>"; };
 		584FAB7427E07F0F00CD6BAA /* UIView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Extension.swift"; sourceTree = "<group>"; };
 		584FAB7727E0A0D400CD6BAA /* SurveyCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyCell.swift; sourceTree = "<group>"; };
 		584FAB7827E0A0D400CD6BAA /* SurveyCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SurveyCell.xib; sourceTree = "<group>"; };
@@ -73,7 +73,7 @@
 		58D4F98427DAA64A00184CBB /* NimbleSurveyAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NimbleSurveyAPI.swift; sourceTree = "<group>"; };
 		58D4F98627DAA69800184CBB /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		58D4F98827DAA80400184CBB /* Encodable+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Encodable+Extension.swift"; sourceTree = "<group>"; };
-		58D4F98B27DAA8A500184CBB /* NimbleSurveyUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NimbleSurveyUser.swift; sourceTree = "<group>"; };
+		58D4F98B27DAA8A500184CBB /* NimbleSurveyAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NimbleSurveyAuth.swift; sourceTree = "<group>"; };
 		58D4F98D27DAAA0700184CBB /* NimbleSurveyAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NimbleSurveyAPIService.swift; sourceTree = "<group>"; };
 		6F1DB7B5821DA22BDC0949BC /* Pods_NimbleSurvey_NimbleSurveyTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NimbleSurvey_NimbleSurveyTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8C53E4478CDCDC43A13ABCD5 /* Pods-NimbleSurvey-NimbleSurveyTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NimbleSurvey-NimbleSurveyTests.debug.xcconfig"; path = "Target Support Files/Pods-NimbleSurvey-NimbleSurveyTests/Pods-NimbleSurvey-NimbleSurveyTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -247,7 +247,7 @@
 		58D4F97E27DAA58100184CBB /* Managers */ = {
 			isa = PBXGroup;
 			children = (
-				584FAB7227E04C9700CD6BAA /* UserManager.swift */,
+				584FAB7227E04C9700CD6BAA /* AuthenticationManager.swift */,
 				58D4F97F27DAA59100184CBB /* MessageManagers.swift */,
 			);
 			path = Managers;
@@ -272,7 +272,7 @@
 		58D4F98A27DAA88A00184CBB /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				58D4F98B27DAA8A500184CBB /* NimbleSurveyUser.swift */,
+				58D4F98B27DAA8A500184CBB /* NimbleSurveyAuth.swift */,
 				584FAB7B27E0A22F00CD6BAA /* NimbleSurveyItem.swift */,
 			);
 			path = Models;
@@ -484,7 +484,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				58D4F98C27DAA8A500184CBB /* NimbleSurveyUser.swift in Sources */,
+				58D4F98C27DAA8A500184CBB /* NimbleSurveyAuth.swift in Sources */,
 				58D4F98727DAA69800184CBB /* Constants.swift in Sources */,
 				584FAB7527E07F0F00CD6BAA /* UIView+Extension.swift in Sources */,
 				584FAB7C27E0A22F00CD6BAA /* NimbleSurveyItem.swift in Sources */,
@@ -500,7 +500,7 @@
 				58D4F98E27DAAA0700184CBB /* NimbleSurveyAPIService.swift in Sources */,
 				584FAB6C27E0402100CD6BAA /* HomeViewModel.swift in Sources */,
 				584FAB4E27E03F5B00CD6BAA /* LoginViewController.swift in Sources */,
-				584FAB7327E04C9700CD6BAA /* UserManager.swift in Sources */,
+				584FAB7327E04C9700CD6BAA /* AuthenticationManager.swift in Sources */,
 				584FAB7927E0A0D400CD6BAA /* SurveyCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

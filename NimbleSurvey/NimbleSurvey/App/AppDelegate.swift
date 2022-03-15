@@ -31,10 +31,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if userDefaults.object(forKey: "FirstRun") == nil {
             // Delete values from keychain here
             userDefaults.setValue("1strun", forKey: "FirstRun")
-            UserManager.shared.logout()
+            AuthenticationManager.shared.logout()
         }
         
-        if UserManager.shared.isLogin() {
+        if AuthenticationManager.shared.isLogin() {
             Self.openHomeScreen()
         } else {
             Self.openLoginScreen()

@@ -109,8 +109,8 @@ extension NimbleSurveyAPI : TargetType {
         var defaultHeaders = ["Accept": "application/json"]
         switch self {
         case .surveyList:
-            if let tokenType = UserManager.shared.currentUser()?.attributes?.tokenType,
-               let token = UserManager.shared.currentUser()?.attributes?.accessToken {
+            if let tokenType = AuthenticationManager.shared.currentAuth()?.attributes?.tokenType,
+               let token = AuthenticationManager.shared.currentAuth()?.attributes?.accessToken {
                 defaultHeaders["Authorization"] = "\(tokenType) \(token)"
             }
         default:

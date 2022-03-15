@@ -7,13 +7,13 @@
 
 import Foundation
 
-struct NimbleSurveyUser: Codable {
+struct NimbleSurveyAuth: Codable {
     let id: Int?
     let type: String?
-    let attributes: NimbleSurveyUserAttributes?
+    let attributes: NimbleSurveyAuthAttributes?
 }
 
-struct NimbleSurveyUserAttributes: Codable {
+struct NimbleSurveyAuthAttributes: Codable {
     let accessToken, tokenType: String?
     let expiresIn: Int?
     let refreshToken: String?
