@@ -17,22 +17,14 @@ class HomeViewModel : ViewModelProtocol {
     typealias Dependency = NimbleSurveyAPIService
     
     struct Input {
-        //Variables
         let surveys                         : BehaviorRelay<[NimbleSurvey]>
-        let page                            : BehaviorRelay<Int>
-        let ended                           : BehaviorRelay<Bool>
-        
-        //Trigger
         let load                            : PublishRelay<()>
-        let loadMore                        : PublishRelay<()>
-        
         let isLoading                       : BehaviorRelay<Bool>
     }
     
     struct Output {
         let sections                        : Driver<[SurveySection]>
         let loadResult                      : Observable<Result<[NimbleSurvey],NimbleSurveyError>>
-        let loadMoreResult                  : Observable<Result<[NimbleSurvey],NimbleSurveyError>>
     }
     
     var input      : Input?
@@ -57,27 +49,16 @@ class HomeViewModel : ViewModelProtocol {
             .debounce(RxTimeInterval.milliseconds(300), scheduler: MainScheduler.instance)
             .do(onNext: { _ in
                 ip.isLoading.accept(true)
-                ip.surveys.accept([])
-                ip.page.accept(2)
-                ip.ended.accept(false)
             })
             .flatMap { _ -> Observable<Result<[NimbleSurvey],NimbleSurveyError>> in
-                return dp.getSurveyList(page: 1)
+                return dp.getSurveyList()
             }
             .do(onNext: { _ in
                 ip.isLoading.accept(false)
             })
-        let loadMoreResult = ip.loadMore.asObservable()
-            .debounce(RxTimeInterval.milliseconds(300), scheduler: MainScheduler.instance)
-            .withLatestFrom(Observable.combineLatest(ip.page, ip.ended))
-            .flatMap { (page, ended) -> Observable<Result<[NimbleSurvey],NimbleSurveyError>> in
-                guard not(ended) else { return .empty() }
-                return dp.getSurveyList(page: page)
-            }
-        let sections = ip.surveys.asDriver().map { [SurveySection(model: "repo", items: $0)] }
+        let sections = ip.surveys.asDriver().map { [SurveySection(model: "survey", items: $0)] }
         return HomeViewModel.Output(sections: sections,
-                                    loadResult: loadResult,
-                                    loadMoreResult: loadMoreResult)
+                                    loadResult: loadResult)
     }
     
 }

@@ -15,16 +15,15 @@ typealias SurveyDataSource = RxCollectionViewSectionedReloadDataSource<SurveySec
 
 class HomeViewController: UIViewController, RxViewController {
     @IBOutlet weak var collectionView: UICollectionView!
+    @IBOutlet weak var pageControl: UIPageControl!
     @IBOutlet weak var detailButton: UIButton!
+    @IBOutlet weak var loadingImageView: UIImageView!
     var disposeBag: DisposeBag = DisposeBag()
     var viewModel: HomeViewModel = HomeViewModel(
         input: HomeViewModel.Input(
             surveys: BehaviorRelay<[NimbleSurvey]>(value: []),
-            page: BehaviorRelay<Int>(value: 1),
-            ended: BehaviorRelay<Bool>(value: false),
             load: PublishRelay<()>(),
-            loadMore: PublishRelay<()>(),
-            isLoading: BehaviorRelay<Bool>(value: false)
+            isLoading: BehaviorRelay<Bool>(value: true)
         ),
         dependency: NimbleSurveyAPIService.shared
     )
@@ -37,13 +36,25 @@ class HomeViewController: UIViewController, RxViewController {
         setupView()
         setupViewModel()
     }
-    
+    @IBAction func detailTapped(_ sender: Any) {
+        let detailVC = SurveyDetailViewController()
+        navigationController?.pushViewController(detailVC, animated: true)
+    }
 }
 
 extension HomeViewController {
     func setupView() {
         collectionView.allowsSelection = false
         collectionView.rx.setDelegate(self).disposed(by: disposeBag)
+        collectionView.rx.didEndDecelerating.asDriver()
+            .flatMap { [weak self] _ -> Driver<Int> in
+                guard let self = self else { return Driver.empty() }
+                let pageWidth = self.collectionView.frame.size.width
+                let page = Int(floor((self.collectionView.contentOffset.x - pageWidth / 2) / pageWidth) + 1)
+                debugPrint("page = \(page)")
+                return Driver.just(page)
+            }
+            .drive(pageControl.rx.currentPage).disposed(by: disposeBag)
     }
     func setupViewModel() {
         if let op = self.viewModel.output {
@@ -55,13 +66,17 @@ extension HomeViewController {
         }
     }
     private func bindingInput(input: HomeViewModel.Input) {
-        input.isLoading.asDriver().drive(onNext: { isLoading in
+        input.isLoading.asDriver().drive(onNext: { [weak self] isLoading in
+            guard let self = self else { return }
             if isLoading {
                 SVProgressHUD.show()
+                self.loadingImageView.isHidden = false
             } else {
+                self.loadingImageView.isHidden = true
                 SVProgressHUD.dismiss()
             }
         }).disposed(by: disposeBag)
+        input.surveys.asDriver().map { $0.count }.drive(pageControl.rx.numberOfPages).disposed(by: disposeBag)
         input.load.accept(())
     }
     private func bindingOutput(output: HomeViewModel.Output) {
@@ -73,27 +88,6 @@ extension HomeViewController {
             switch result {
             case .success(let surveys):
                 self.viewModel.input?.surveys.accept(surveys)
-            case .failure(let error):
-                DispatchQueue.main.async {
-                    MessageManager.shared.showMessage(messageType: .error, message: error.description)
-                }
-            }
-        }).disposed(by: disposeBag)
-        output.loadMoreResult.subscribe(onNext: { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success(let surveys):
-                if surveys.isEmpty {
-                    self.viewModel.input?.ended.accept(true)
-                } else {
-                    var currentSurveys = self.viewModel.input?.surveys.value ?? []
-                    currentSurveys += surveys
-                    self.viewModel.input?.surveys.accept(currentSurveys)
-                    // Increase page
-                    var currentPage = self.viewModel.input?.page.value ?? 1
-                    currentPage += 1
-                    self.viewModel.input?.page.accept(currentPage)
-                }
             case .failure(let error):
                 DispatchQueue.main.async {
                     MessageManager.shared.showMessage(messageType: .error, message: error.description)
