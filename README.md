@@ -16,3 +16,4 @@
 * [x] Fetching the list of survey while launching the application.
 * [x] Display loading animation while fetching the list of survey.
 * [x] Implement dynamic page control based on API response.
+* [x] Unit Test
