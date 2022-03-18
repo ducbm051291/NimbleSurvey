@@ -15,12 +15,15 @@ target 'NimbleSurvey' do
   pod 'SwiftMessages'
   pod 'KeychainAccess'
   pod 'IQKeyboardManagerSwift'
+  pod 'Japx/RxMoya'
+  pod 'UIView-Shimmer'
   
   #MARK: - Rx
   pod 'RxSwift'
   pod 'RxCocoa'
   pod 'RxRelay'
   pod 'RxDataSources'
+  
   
   target 'NimbleSurveyTests' do
     pod 'RxTest'

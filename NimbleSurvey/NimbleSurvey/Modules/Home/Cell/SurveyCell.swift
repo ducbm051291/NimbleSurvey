@@ -7,6 +7,7 @@
 
 import UIKit
 import SDWebImage
+import UIView_Shimmer
 
 class SurveyCell: UICollectionViewCell {
     static let cellIdentifier = "SurveyCell"
@@ -15,20 +16,27 @@ class SurveyCell: UICollectionViewCell {
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var descriptionLabel: UILabel!
     
+    var shimmeringAnimatedItems: [UIView] {
+        [
+            surveyImageView,
+            titleLabel,
+            descriptionLabel
+        ]
+    }
+    
     var survey: NimbleSurvey? {
         didSet {
             guard let survey = survey else {
                 return
-            }            
-            surveyImageView.sd_setImage(with: URL(string: survey.attributes?.getLargeCoverImage() ?? ""))
-            titleLabel.text = survey.attributes?.title
-            descriptionLabel.text = survey.attributes?.desc
+            }
+            surveyImageView.sd_setImage(with: URL(string: survey.getLargeCoverImage()))
+            titleLabel.text = survey.title
+            descriptionLabel.text = survey.desc
         }
     }
-
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
-    }
-
+    }    
 }

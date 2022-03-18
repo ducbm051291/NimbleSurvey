@@ -6,18 +6,16 @@
 //
 
 import Foundation
+import Japx
 
-struct NimbleSurvey: Codable {
-    let id, type: String?
-    let attributes: NimbleSurveyDetails?
-}
-
-struct NimbleSurveyDetails: Codable {
+struct NimbleSurvey: JapxCodable {
+    var type: String    
+    var id: String
     let title, desc: String?
     let coverImageURL: String?
     
     enum CodingKeys: String, CodingKey {
-        case title
+        case id, type, title
         case desc = "description"
         case coverImageURL = "cover_image_url"
     }

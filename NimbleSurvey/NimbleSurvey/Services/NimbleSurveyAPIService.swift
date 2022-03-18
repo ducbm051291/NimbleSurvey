@@ -8,9 +8,22 @@
 import Moya
 import Alamofire
 import RxSwift
+import Japx
 
-class NimbleSurveyData<T:Codable>: Codable {
-    let data: T
+struct NimbleSurveyErrorDetail: Codable {
+    let source: String
+    let detail: String
+    let code: String
+}
+
+struct JapxResponse<T: Codable>: Codable {
+    var data: T?
+    var errors: [NimbleSurveyErrorDetail]?
+}
+
+struct JapxResponseArray<T: Codable>: Codable {
+    var data: [T]?
+    var errors: [NimbleSurveyErrorDetail]?
 }
 
 class NimbleSurveyAPIService {
@@ -21,7 +34,7 @@ class NimbleSurveyAPIService {
     private init() {
         // Refresh token observable
         self.refreshTokenObservable = Observable.deferred {
-            let token = AuthenticationManager.shared.currentAuth()?.attributes?.refreshToken ?? ""
+            let token = AuthenticationManager.shared.currentAuth()?.refreshToken ?? ""
             if token.isEmpty {
                 return Observable.just(false)
             } else {
@@ -39,33 +52,57 @@ class NimbleSurveyAPIService {
         .share(replay: 1, scope: .whileConnected)
     }
     // This is a generic wrapper function for API request. All API request must be called through this.
-    func request<T: Codable>(_ api: NimbleSurveyAPI) -> Observable<Result<T,NimbleSurveyError>> {
+    func request<T: JapxCodable>(_ api: NimbleSurveyAPI) -> Observable<Result<T,NimbleSurveyError>> {
         return provider.rx.request(api).asObservable()
             .flatMap({ response -> Observable<Response> in
-                if response.statusCode == 401 {
-                    return self.refreshTokenObservable.flatMap { success -> Observable<Response> in
-                        if success {
-                            // Re-call API
-                            return self.provider.rx.request(api).asObservable()
-                        } else {
-                            return Observable.just(response)
-                        }
-                    }
-                } else {
-                    return Observable.just(response)
-                }
+                return self.checkExpireToken(response, api)
             })
             .flatMap({ response -> Observable<Result<T,NimbleSurveyError>> in
                 Self.prettyPrintJsonData(response.data)
-                let decoder = JSONDecoder()
-                if let data = try? decoder.decode(NimbleSurveyData<T>.self, from: response.data) {
-                    return Observable.just(.success(data.data))
+                let responseData = try JapxDecoder().decode(JapxResponse<T>.self, from: response.data)
+                if let data = responseData.data {
+                    return Observable.just(.success(data))
+                } else if let error = responseData.errors?.first?.detail {
+                    return Observable.just(.failure(NimbleSurveyError.custom(error)))
                 }
                 return Observable.just(.failure(NimbleSurveyError.invalidData))
             })
             .catchError{ error in
-                return Observable.just(.failure(NimbleSurveyError.custom(error)))
+                return Observable.just(.failure(NimbleSurveyError.custom(error.localizedDescription)))
             }
+    }
+    func request<T: JapxCodable>(_ api: NimbleSurveyAPI) -> Observable<Result<[T],NimbleSurveyError>> {
+        return provider.rx.request(api).asObservable()
+            .flatMap({ response -> Observable<Response> in
+                return self.checkExpireToken(response, api)
+            })
+            .flatMap({ response -> Observable<Result<[T],NimbleSurveyError>> in
+                Self.prettyPrintJsonData(response.data)
+                let responseData = try JapxDecoder().decode(JapxResponseArray<T>.self, from: response.data)
+                if let data = responseData.data {
+                    return Observable.just(.success(data))
+                } else if let error = responseData.errors?.first?.detail {
+                    return Observable.just(.failure(NimbleSurveyError.custom(error)))
+                }
+                return Observable.just(.failure(NimbleSurveyError.invalidData))
+            })
+            .catchError{ error in
+                return Observable.just(.failure(NimbleSurveyError.custom(error.localizedDescription)))
+            }
+    }
+    func checkExpireToken(_ response: Response,_ api: NimbleSurveyAPI) -> Observable<Response> {
+        if response.statusCode == 401 {
+            return self.refreshTokenObservable.flatMap { success -> Observable<Response> in
+                if success {
+                    // Re-call API
+                    return self.provider.rx.request(api).asObservable()
+                } else {
+                    return Observable.just(response)
+                }
+            }
+        } else {
+            return Observable.just(response)
+        }
     }
     static func prettyPrintJsonData(_ data: Data) {
         let stringData = String(data: data, encoding: .utf8) ?? ""
