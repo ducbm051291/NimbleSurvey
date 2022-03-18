@@ -9,6 +9,8 @@ import UIKit
 import SDWebImage
 import UIView_Shimmer
 
+extension UILabel: ShimmeringViewProtocol { }
+
 class SurveyCell: UICollectionViewCell {
     static let cellIdentifier = "SurveyCell"
     
@@ -18,7 +20,6 @@ class SurveyCell: UICollectionViewCell {
     
     var shimmeringAnimatedItems: [UIView] {
         [
-            surveyImageView,
             titleLabel,
             descriptionLabel
         ]

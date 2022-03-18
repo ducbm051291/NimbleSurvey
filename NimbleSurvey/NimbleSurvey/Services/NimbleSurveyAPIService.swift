@@ -123,7 +123,7 @@ extension NimbleSurveyAPIService {
     func refreshToken(refreshToken: String) -> Observable<Result<NimbleSurveyAuth,NimbleSurveyError>> {
         return self.request(.refreshToken(RefreshTokenRequest(refreshToken: refreshToken)))
     }
-    func getSurveyList(page: Int = 1, limit: Int = 10) -> Observable<Result<[NimbleSurvey],NimbleSurveyError>> {
+    func getSurveyList(page: Int = 1, limit: Int = 4) -> Observable<Result<[NimbleSurvey],NimbleSurveyError>> {
         return self.request(.surveyList(SurveyListRequest(page: page, limit: limit)))
     }
 }

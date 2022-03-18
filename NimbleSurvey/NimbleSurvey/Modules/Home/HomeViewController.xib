@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19519"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -13,8 +13,8 @@
             <connections>
                 <outlet property="collectionView" destination="vhu-kI-0q8" id="pNU-QC-hko"/>
                 <outlet property="detailButton" destination="qzx-Wq-jPY" id="xj2-Bm-2Ev"/>
-                <outlet property="loadingImageView" destination="FLY-xb-gIg" id="1mg-eH-wxf"/>
                 <outlet property="pageControl" destination="PpZ-Y8-1Gu" id="Rcb-yl-pta"/>
+                <outlet property="refreshButton" destination="bd5-Dl-Tb1" id="1pa-LY-y9y"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -23,8 +23,8 @@
             <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" directionalLockEnabled="YES" pagingEnabled="YES" showsVerticalScrollIndicator="NO" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="vhu-kI-0q8">
-                    <rect key="frame" x="0.0" y="-8" width="414" height="904"/>
+                <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" pagingEnabled="YES" showsVerticalScrollIndicator="NO" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="vhu-kI-0q8">
+                    <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="0.0" minimumInteritemSpacing="0.0" id="S9L-95-Lhx">
                         <size key="itemSize" width="128" height="128"/>
@@ -45,16 +45,26 @@
                         <action selector="detailTapped:" destination="-1" eventType="touchUpInside" id="9VP-7s-8dN"/>
                     </connections>
                 </button>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bd5-Dl-Tb1">
+                <button clipsSubviews="YES" contentMode="scaleToFill" showsMenuAsPrimaryAction="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bd5-Dl-Tb1">
                     <rect key="frame" x="338" y="94" width="56" height="56"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="56" id="8b7-XT-hmM"/>
                         <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="36" id="CTu-Xz-4Wl"/>
                         <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="36" id="Yxa-T9-vtp"/>
                         <constraint firstAttribute="width" constant="56" id="u8X-wD-vff"/>
                     </constraints>
+                    <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                    <state key="normal" image="ic_avatar"/>
+                    <state key="normal" image="arrow.clockwise" catalog="system"/>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                            <real key="value" value="28"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
+                    <connections>
+                        <action selector="refreshTapped:" destination="-1" eventType="touchUpInside" id="IOs-wg-k1m"/>
+                    </connections>
                 </button>
                 <pageControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="leading" contentVerticalAlignment="center" numberOfPages="3" translatesAutoresizingMaskIntoConstraints="NO" id="PpZ-Y8-1Gu">
                     <rect key="frame" x="20" y="668" width="374" height="28"/>
@@ -62,36 +72,28 @@
                         <constraint firstAttribute="height" constant="28" id="MgV-Pv-9HR"/>
                     </constraints>
                 </pageControl>
-                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="img_lazy_load_2" translatesAutoresizingMaskIntoConstraints="NO" id="FLY-xb-gIg">
-                    <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
-                </imageView>
             </subviews>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
                 <constraint firstAttribute="bottom" secondItem="PpZ-Y8-1Gu" secondAttribute="bottom" constant="200" id="4QD-6L-4Xd"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="qzx-Wq-jPY" secondAttribute="trailing" constant="20" id="IIM-fR-Bvx"/>
-                <constraint firstItem="FLY-xb-gIg" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="Ip5-5b-CKo"/>
-                <constraint firstAttribute="bottom" secondItem="FLY-xb-gIg" secondAttribute="bottom" id="K5C-pp-afo"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="qzx-Wq-jPY" secondAttribute="bottom" constant="54" id="KVl-ui-cgj"/>
                 <constraint firstItem="vhu-kI-0q8" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="M49-tG-UvA"/>
-                <constraint firstItem="vhu-kI-0q8" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="-8" id="QR7-bV-NZj"/>
+                <constraint firstItem="vhu-kI-0q8" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="QR7-bV-NZj"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="bd5-Dl-Tb1" secondAttribute="trailing" constant="20" id="Xz8-5H-4R9"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="PpZ-Y8-1Gu" secondAttribute="trailing" constant="20" id="Y2N-qH-ehs"/>
                 <constraint firstAttribute="trailing" secondItem="vhu-kI-0q8" secondAttribute="trailing" id="aNi-2k-JbY"/>
                 <constraint firstAttribute="bottom" secondItem="vhu-kI-0q8" secondAttribute="bottom" id="iUj-wx-7kL"/>
                 <constraint firstItem="bd5-Dl-Tb1" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" constant="50" id="jCf-IY-nky"/>
-                <constraint firstItem="FLY-xb-gIg" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="nQt-vi-vOP"/>
                 <constraint firstItem="PpZ-Y8-1Gu" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="20" id="puN-yP-vXX"/>
-                <constraint firstAttribute="trailing" secondItem="FLY-xb-gIg" secondAttribute="trailing" id="zrW-7r-Ttw"/>
             </constraints>
             <point key="canvasLocation" x="131.8840579710145" y="93.75"/>
         </view>
     </objects>
     <resources>
+        <image name="arrow.clockwise" catalog="system" width="115" height="128"/>
         <image name="ic_action" width="56" height="56"/>
-        <image name="ic_avatar" width="36" height="36"/>
-        <image name="img_lazy_load_2" width="375" height="812"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

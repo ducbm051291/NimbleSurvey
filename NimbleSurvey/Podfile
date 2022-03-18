@@ -23,7 +23,7 @@ target 'NimbleSurvey' do
   pod 'RxCocoa'
   pod 'RxRelay'
   pod 'RxDataSources'
-  
+  pod 'RxReachability'
   
   target 'NimbleSurveyTests' do
     pod 'RxTest'

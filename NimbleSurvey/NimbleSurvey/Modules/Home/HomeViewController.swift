@@ -9,6 +9,8 @@ import UIKit
 import RxSwift
 import RxCocoa
 import RxDataSources
+import RxReachability
+import Reachability
 import SVProgressHUD
 
 typealias SurveyDataSource = RxCollectionViewSectionedReloadDataSource<SurveySection>
@@ -16,18 +18,12 @@ typealias SurveyDataSource = RxCollectionViewSectionedReloadDataSource<SurveySec
 class HomeViewController: UIViewController, RxViewController {
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var pageControl: UIPageControl!
+    @IBOutlet weak var refreshButton: UIButton!
     @IBOutlet weak var detailButton: UIButton!
-    @IBOutlet weak var loadingImageView: UIImageView!
     var disposeBag: DisposeBag = DisposeBag()
-    var viewModel: HomeViewModel = HomeViewModel(
-        input: HomeViewModel.Input(
-            surveys: BehaviorRelay<[NimbleSurvey]>(value: []),
-            load: PublishRelay<()>(),
-            isLoading: BehaviorRelay<Bool>(value: true)
-        ),
-        dependency: NimbleSurveyAPIService.shared
-    )
+    var viewModel: HomeViewModel!
     var dataSource: SurveyDataSource!
+    var reachability: Reachability?
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
@@ -35,6 +31,20 @@ class HomeViewController: UIViewController, RxViewController {
         configDataSource()
         setupView()
         setupViewModel()
+    }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        try? reachability?.startNotifier()
+    }
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        reachability?.stopNotifier()
+    }
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
+    @IBAction func refreshTapped(_ sender: Any) {
+        viewModel.input?.load.accept(())
     }
     @IBAction func detailTapped(_ sender: Any) {
         let detailVC = SurveyDetailViewController()
@@ -44,6 +54,20 @@ class HomeViewController: UIViewController, RxViewController {
 
 extension HomeViewController {
     func setupView() {
+        reachability = try? Reachability()
+        viewModel = HomeViewModel(
+            input: HomeViewModel.Input(
+                surveys: BehaviorRelay<[NimbleSurvey]>(value: [NimbleSurvey.getFakeSurvey()]),
+                load: PublishRelay<()>(),
+                loadMore: PublishRelay<()>(),
+                page: BehaviorRelay<Int>(value: 1),
+                ended: BehaviorRelay<Bool>(value: false),
+                isLoading: BehaviorRelay<Bool>(value: true)
+            ),
+            dependency: NimbleSurveyAPIService.shared,
+            disposeBag: self.disposeBag
+        )
+        automaticallyAdjustsScrollViewInsets = false
         collectionView.allowsSelection = false
         collectionView.rx.setDelegate(self).disposed(by: disposeBag)
         collectionView.rx.didEndDecelerating.asDriver()
@@ -55,6 +79,10 @@ extension HomeViewController {
                 return Driver.just(page)
             }
             .drive(pageControl.rx.currentPage).disposed(by: disposeBag)
+        pageControl.addTarget(self, action: #selector(pageControlHandle), for: .valueChanged)
+    }
+    @objc private func pageControlHandle(sender: UIPageControl){
+        collectionView.scrollToItem(at: IndexPath(row: sender.currentPage, section: 0), at: .centeredHorizontally, animated: true)
     }
     func setupViewModel() {
         if let op = self.viewModel.output {
@@ -66,34 +94,49 @@ extension HomeViewController {
         }
     }
     private func bindingInput(input: HomeViewModel.Input) {
-        input.isLoading.asDriver().drive(onNext: { [weak self] isLoading in
-            guard let self = self else { return }
-            if isLoading {
-                SVProgressHUD.show()
-                self.loadingImageView.isHidden = false
-            } else {
-                self.loadingImageView.isHidden = true
-                SVProgressHUD.dismiss()
-            }
-        }).disposed(by: disposeBag)
-        input.surveys.asDriver().map { $0.count }.drive(pageControl.rx.numberOfPages).disposed(by: disposeBag)
+        input.surveys.asDriver().map { $0.count == 1 && $0.first?.isFake ?? false }
+            .drive(pageControl.rx.isHidden)
+            .disposed(by: disposeBag)
+        input.surveys.asDriver().map { $0.count }
+            .drive(pageControl.rx.numberOfPages)
+            .disposed(by: disposeBag)
         input.load.accept(())
     }
     private func bindingOutput(output: HomeViewModel.Output) {
-        output.sections
+        output.sections.asDriver(onErrorJustReturn: [])
             .drive(self.collectionView.rx.items(dataSource: self.dataSource))
             .disposed(by: disposeBag)
-        output.loadResult.subscribe(onNext: { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success(let surveys):
-                self.viewModel.input?.surveys.accept(surveys)
-            case .failure(let error):
+        output.loadFail.asObservable()
+            .subscribe(onNext: { error in
                 DispatchQueue.main.async {
-                    MessageManager.shared.showMessage(messageType: .error, message: error.description)
+                    MessageManager.shared.showMessage(messageType: .error, message: error)
                 }
-            }
-        }).disposed(by: disposeBag)
+            }).disposed(by: disposeBag)
+        output.loadMoreFail.asObservable()
+            .subscribe(onNext: { error in
+                // Nothing to do here
+            }).disposed(by: disposeBag)
+    }
+    func bindReachability() {
+        reachability?.rx.isConnected
+            .subscribe(onNext: { [weak self] in                
+                DispatchQueue.main.async {
+                    MessageManager.shared.showMessage(messageType: .warning, message: "INTERNET CONNECTION LOST")
+                }
+                guard let self = self else { return }
+                guard let input = self.viewModel.input else { return }
+                if input.surveys.value.isEmpty || (input.surveys.value.count == 1 && input.surveys.value.first?.isFake ?? false) {
+                    input.load.accept(())
+                }
+            })
+            .disposed(by: disposeBag)
+        reachability?.rx.isDisconnected
+            .subscribe(onNext: { _ in
+                DispatchQueue.main.async {
+                    MessageManager.shared.showMessage(messageType: .warning, message: "INTERNET CONNECTION LOST")
+                }
+            })
+            .disposed(by: disposeBag)
     }
 }
 
@@ -110,8 +153,21 @@ extension HomeViewController {
         dataSource = ds
     }
 }
+
+extension HomeViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        if let surveyCell = cell as? SurveyCell, let survey = surveyCell.survey, survey.isFake {
+            cell.setTemplateWithSubviews(true, color: UIColor.darkGray, animate: true, viewBackgroundColor: UIColor.lightGray)
+        } else {
+            cell.setTemplateWithSubviews(false)
+            if indexPath.row == (self.viewModel.input?.surveys.value ?? []).count - 1 {
+                viewModel.input?.loadMore.accept(())
+            }
+        }
+    }
+}
 extension HomeViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: collectionView.bounds.width, height: collectionView.bounds.height)
+        return collectionView.frame.size
     }
 }

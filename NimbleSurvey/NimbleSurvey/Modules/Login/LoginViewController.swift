@@ -27,8 +27,10 @@ class LoginViewController: UIViewController, RxViewController {
         // Do any additional setup after loading the view.
         setupView()
         setupViewModel()
+    }    
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
     }
-    
 }
 
 extension LoginViewController {
