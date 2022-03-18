@@ -11,18 +11,19 @@ import RxSwift
 import Japx
 
 struct NimbleSurveyErrorDetail: Codable {
-    let source: String
     let detail: String
     let code: String
 }
 
 struct JapxResponse<T: Codable>: Codable {
     var data: T?
-    var errors: [NimbleSurveyErrorDetail]?
 }
 
 struct JapxResponseArray<T: Codable>: Codable {
     var data: [T]?
+}
+
+struct ErrorResponse: Codable {
     var errors: [NimbleSurveyErrorDetail]?
 }
 
@@ -59,10 +60,11 @@ class NimbleSurveyAPIService {
             })
             .flatMap({ response -> Observable<Result<T,NimbleSurveyError>> in
                 Self.prettyPrintJsonData(response.data)
-                let responseData = try JapxDecoder().decode(JapxResponse<T>.self, from: response.data)
-                if let data = responseData.data {
+                if let responseData = try? JapxDecoder().decode(JapxResponse<T>.self, from: response.data),
+                   let data = responseData.data {
                     return Observable.just(.success(data))
-                } else if let error = responseData.errors?.first?.detail {
+                } else if let responseError = try? JSONDecoder().decode(ErrorResponse.self, from: response.data),
+                          let error = responseError.errors?.first?.detail{
                     return Observable.just(.failure(NimbleSurveyError.custom(error)))
                 }
                 return Observable.just(.failure(NimbleSurveyError.invalidData))
@@ -78,10 +80,11 @@ class NimbleSurveyAPIService {
             })
             .flatMap({ response -> Observable<Result<[T],NimbleSurveyError>> in
                 Self.prettyPrintJsonData(response.data)
-                let responseData = try JapxDecoder().decode(JapxResponseArray<T>.self, from: response.data)
-                if let data = responseData.data {
+                if let responseData = try? JapxDecoder().decode(JapxResponseArray<T>.self, from: response.data),
+                   let data = responseData.data {
                     return Observable.just(.success(data))
-                } else if let error = responseData.errors?.first?.detail {
+                } else if let responseError = try? JSONDecoder().decode(ErrorResponse.self, from: response.data),
+                          let error = responseError.errors?.first?.detail{
                     return Observable.just(.failure(NimbleSurveyError.custom(error)))
                 }
                 return Observable.just(.failure(NimbleSurveyError.invalidData))
