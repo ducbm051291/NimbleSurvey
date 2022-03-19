@@ -27,7 +27,7 @@ class LoginViewController: UIViewController, RxViewController {
         // Do any additional setup after loading the view.
         setupView()
         setupViewModel()
-    }    
+    }
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
@@ -54,6 +54,8 @@ extension LoginViewController {
             string: "Password",
             attributes: [NSAttributedString.Key.foregroundColor: UIColor.white.withAlphaComponent(0.3)]
         )
+        emailTextField.delegate = self
+        passwordTextField.delegate = self
     }
     
     func setupViewModel() {
@@ -91,10 +93,12 @@ extension LoginViewController {
     
     func bindingOutput(output: LoginViewModel.Output) {
         output.loginEnable.asDriver(onErrorJustReturn: false)
+            .startWith(false)
             .drive(logInButton.rx.isEnabled)
             .disposed(by: disposeBag)
         
         output.loginEnable.asDriver(onErrorJustReturn: false)
+            .startWith(false)
             .map { $0 ? .white : .white.withAlphaComponent(0.6) }
             .drive(logInButton.rx.backgroundColor)
             .disposed(by: disposeBag)
@@ -124,4 +128,17 @@ extension LoginViewController {
             .disposed(by: disposeBag)
     }
     
+}
+
+extension LoginViewController: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        if textField == emailTextField {
+            passwordTextField.becomeFirstResponder()
+        } else {
+            if logInButton.isEnabled {
+                self.viewModel.input?.login.accept(())
+            }
+        }
+        return true
+    }
 }

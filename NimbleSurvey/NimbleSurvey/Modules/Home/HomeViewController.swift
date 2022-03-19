@@ -31,6 +31,7 @@ class HomeViewController: UIViewController, RxViewController {
         configDataSource()
         setupView()
         setupViewModel()
+        bindReachability()
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -121,7 +122,7 @@ extension HomeViewController {
         reachability?.rx.isConnected
             .subscribe(onNext: { [weak self] in                
                 DispatchQueue.main.async {
-                    MessageManager.shared.showMessage(messageType: .warning, message: "INTERNET CONNECTION LOST")
+                    MessageManager.shared.showMessage(messageType: .success, message: "INTERNET CONNECTION RESTORED")
                 }
                 guard let self = self else { return }
                 guard let input = self.viewModel.input else { return }

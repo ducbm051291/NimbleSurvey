@@ -83,6 +83,7 @@ class HomeViewModel : ViewModelProtocol {
                     if not(surveys.isEmpty) {
                         ip.page.accept(ip.page.value + 1)
                     }
+                    output.loadSuccess.accept(())
                 case .failure(let error):
                     output.loadFail.accept(error.description)
                 }
@@ -114,6 +115,7 @@ class HomeViewModel : ViewModelProtocol {
                     } else {
                         ip.ended.accept(true)
                     }
+                    output.loadMoreSuccess.accept(())
                 case .failure(let error):
                     output.loadMoreFail.accept(error.description)
                     ip.ended.accept(true)
