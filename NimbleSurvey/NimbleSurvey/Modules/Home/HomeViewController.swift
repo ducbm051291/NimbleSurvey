@@ -71,15 +71,18 @@ extension HomeViewController {
         automaticallyAdjustsScrollViewInsets = false
         collectionView.allowsSelection = false
         collectionView.rx.setDelegate(self).disposed(by: disposeBag)
-        collectionView.rx.didEndDecelerating.asDriver()
-            .flatMap { [weak self] _ -> Driver<Int> in
-                guard let self = self else { return Driver.empty() }
-                let pageWidth = self.collectionView.frame.size.width
-                let page = Int(floor((self.collectionView.contentOffset.x - pageWidth / 2) / pageWidth) + 1)
-                debugPrint("page = \(page)")
-                return Driver.just(page)
-            }
-            .drive(pageControl.rx.currentPage).disposed(by: disposeBag)
+        Driver.merge(
+            collectionView.rx.didScroll.asDriver().throttle(RxTimeInterval.milliseconds(300))
+            ,collectionView.rx.didEndDecelerating.asDriver()
+        )
+        .flatMap { [weak self] _ -> Driver<Int> in
+            guard let self = self else { return Driver.empty() }
+            let pageWidth = self.collectionView.frame.size.width
+            let page = Int(floor((self.collectionView.contentOffset.x - pageWidth / 2) / pageWidth) + 1)
+            debugPrint("page = \(page)")
+            return Driver.just(page)
+        }
+        .drive(pageControl.rx.currentPage).disposed(by: disposeBag)
         pageControl.addTarget(self, action: #selector(pageControlHandle), for: .valueChanged)
     }
     @objc private func pageControlHandle(sender: UIPageControl){
@@ -120,7 +123,8 @@ extension HomeViewController {
     }
     func bindReachability() {
         reachability?.rx.isConnected
-            .subscribe(onNext: { [weak self] in                
+            .skip(1)
+            .subscribe(onNext: { [weak self] in
                 DispatchQueue.main.async {
                     MessageManager.shared.showMessage(messageType: .success, message: "INTERNET CONNECTION RESTORED")
                 }
