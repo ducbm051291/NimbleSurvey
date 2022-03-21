@@ -58,7 +58,7 @@
             <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
             <constraints>
                 <constraint firstItem="deU-R5-sdj" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="2u8-dy-2jd"/>
-                <constraint firstItem="ZTg-uK-7eu" firstAttribute="bottom" secondItem="UOo-HM-9ny" secondAttribute="bottom" constant="54" id="8pq-lp-Rl5"/>
+                <constraint firstAttribute="bottom" secondItem="UOo-HM-9ny" secondAttribute="bottom" constant="54" id="AF1-al-IQP"/>
                 <constraint firstAttribute="bottom" secondItem="Kvq-hu-1zQ" secondAttribute="bottom" id="CeH-Qp-hmS"/>
                 <constraint firstAttribute="bottom" secondItem="deU-R5-sdj" secondAttribute="bottom" id="Num-PD-JJs"/>
                 <constraint firstAttribute="trailing" secondItem="deU-R5-sdj" secondAttribute="trailing" id="T1H-de-2Qg"/>

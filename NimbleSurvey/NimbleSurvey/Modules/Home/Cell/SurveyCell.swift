@@ -30,7 +30,9 @@ class SurveyCell: UICollectionViewCell {
             guard let survey = survey else {
                 return
             }
-            surveyImageView.sd_setImage(with: URL(string: survey.getLargeCoverImage()))
+            surveyImageView.sd_setImage(
+                with: URL(string: survey.getLargeCoverImage()),
+                placeholderImage: UIImage(named: "img_placeholder"))
             titleLabel.text = survey.title
             descriptionLabel.text = survey.desc
         }

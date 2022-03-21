@@ -162,7 +162,12 @@ extension HomeViewController {
 extension HomeViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         if let surveyCell = cell as? SurveyCell, let survey = surveyCell.survey, survey.isFake {
-            cell.setTemplateWithSubviews(true, color: UIColor.darkGray, animate: true, viewBackgroundColor: UIColor.lightGray)
+            cell.setTemplateWithSubviews(
+                true,
+                color: .darkGray,
+                animate: true,
+                viewBackgroundColor: UIColor.black
+            )
         } else {
             cell.setTemplateWithSubviews(false)
             if indexPath.row == (self.viewModel.input?.surveys.value ?? []).count - 1 {
