@@ -7,6 +7,7 @@
 
 import Moya
 import Alamofire
+import Japx
 
 enum GrantType: String {
     case password = "password"
@@ -109,8 +110,8 @@ extension NimbleSurveyAPI : TargetType {
         var defaultHeaders = ["Accept": "application/json"]
         switch self {
         case .surveyList:
-            if let tokenType = AuthenticationManager.shared.currentAuth()?.attributes?.tokenType,
-               let token = AuthenticationManager.shared.currentAuth()?.attributes?.accessToken {
+            if let tokenType = AuthenticationManager.shared.currentAuth()?.tokenType,
+               let token = AuthenticationManager.shared.currentAuth()?.accessToken {
                 defaultHeaders["Authorization"] = "\(tokenType) \(token)"
             }
         default:
@@ -120,7 +121,7 @@ extension NimbleSurveyAPI : TargetType {
     }
 }
 
-protocol NimbleSurveyAPIRequest: Codable {
+protocol NimbleSurveyAPIRequest: Encodable {
     func toParameters() -> [String:Any]
 }
 
@@ -136,7 +137,7 @@ enum NimbleSurveyError: Error, Equatable {
     }
     
     case invalidData
-    case custom(Error)
+    case custom(String)
     case unknown
 }
 
@@ -146,7 +147,7 @@ extension NimbleSurveyError: CustomStringConvertible {
         case .invalidData:
             return "Response data is not valid."
         case .custom(let error):
-            return error.localizedDescription
+            return "An error has occured: \(error)"
         case .unknown:
             return "An unknown error occurred."
         }
